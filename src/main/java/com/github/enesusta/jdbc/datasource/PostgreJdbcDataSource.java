@@ -5,7 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.DataSource;
 
-public class PostgreDataSourceConfiguration implements JdbcDataSource {
+public class PostgreJdbcDataSource implements JdbcDataSource {
 
     public DataSource getDataSource(final JdbcConfiguration jdbcConfiguration) {
 
