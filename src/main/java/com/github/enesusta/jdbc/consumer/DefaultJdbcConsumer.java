@@ -21,12 +21,10 @@ public class DefaultJdbcConsumer<T> implements JdbcConsumer<T> {
 
     private final DataSource dataSource;
     private final QueryBuilder queryBuilder;
-    private final ReflectionConsumer reflectionConsumer;
 
     public DefaultJdbcConsumer(final DataSource dataSource) {
         this.dataSource = dataSource;
         this.queryBuilder = new DefaultQueryBuilder();
-        this.reflectionConsumer = new DefaultReflectionConsumer();
     }
 
     /**
@@ -42,9 +40,7 @@ public class DefaultJdbcConsumer<T> implements JdbcConsumer<T> {
     @Override
     public Set<T> retrieveAll(final Class<T> klass) {
 
-        final Domain from = klass.getAnnotation(Domain.class);
-        final String[] queryElements = reflectionConsumer.getQueryElements(klass);
-        final String query = queryBuilder.getQuery(queryElements, from.value());
+        final String query = queryBuilder.getQuery(klass);
         final Field[] fields = klass.getDeclaredFields();
         final Set<T> set = new HashSet<>(20);
 
