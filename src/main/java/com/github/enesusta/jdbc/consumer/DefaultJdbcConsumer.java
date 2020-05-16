@@ -2,10 +2,7 @@ package com.github.enesusta.jdbc.consumer;
 
 import com.github.enesusta.jdbc.consumer.query.DefaultQueryBuilder;
 import com.github.enesusta.jdbc.consumer.query.QueryBuilder;
-import com.github.enesusta.jdbc.consumer.reflection.DefaultReflectionConsumer;
-import com.github.enesusta.jdbc.consumer.reflection.ReflectionConsumer;
 import com.github.enesusta.jdbc.reflection.Column;
-import com.github.enesusta.jdbc.reflection.Domain;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;

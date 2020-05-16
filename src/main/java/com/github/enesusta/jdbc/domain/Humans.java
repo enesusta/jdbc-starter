@@ -7,7 +7,7 @@ import com.github.enesusta.jdbc.reflection.Domain;
 public class Humans {
 
     @Column("id")
-    private int id;
+    private Integer id;
 
     @Column("first_name")
     private String firstName;
