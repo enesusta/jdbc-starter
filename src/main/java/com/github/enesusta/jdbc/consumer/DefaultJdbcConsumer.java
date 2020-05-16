@@ -4,9 +4,11 @@ import com.github.enesusta.jdbc.consumer.query.DefaultQueryBuilder;
 import com.github.enesusta.jdbc.consumer.query.QueryBuilder;
 import com.github.enesusta.jdbc.consumer.reflection.DefaultReflectionConsumer;
 import com.github.enesusta.jdbc.consumer.reflection.ReflectionConsumer;
+import com.github.enesusta.jdbc.reflection.Column;
 import com.github.enesusta.jdbc.reflection.Domain;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,20 +45,26 @@ public class DefaultJdbcConsumer<T> implements JdbcConsumer<T> {
         final Domain from = klass.getAnnotation(Domain.class);
         final String[] queryElements = reflectionConsumer.getQueryElements(klass);
         final String query = queryBuilder.getQuery(queryElements, from.value());
-
+        final Field[] fields = klass.getDeclaredFields();
+        final Set<T> set = new HashSet<>(20);
 
         try (Connection connection =
                      dataSource.getConnection()) {
 
             try (PreparedStatement preparedStatement =
-                         connection.prepareStatement(query)) {
+                         connection.prepareStatement(query + " LIMIT 10")) {
 
                 ResultSet rs = preparedStatement.executeQuery();
 
                 while (rs.next()) {
                     T t = klass.newInstance();
-                    
-
+                    for (final Field field : fields) {
+                        field.setAccessible(true);
+                        Column column = field.getAnnotation(Column.class);
+                        final Object value = rs.getObject(column.value(), field.getType());
+                        field.set(t, value);
+                    }
+                    set.add(t);
                 }
 
             } catch (SQLException e) {
@@ -71,6 +79,6 @@ public class DefaultJdbcConsumer<T> implements JdbcConsumer<T> {
             e.printStackTrace();
         }
 
-        return new HashSet<>();
+        return set;
     }
 }
