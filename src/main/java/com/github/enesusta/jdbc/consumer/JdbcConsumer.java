@@ -12,6 +12,6 @@ public interface JdbcConsumer<T> extends Iterable<T> {
             action.accept(t);
     }
 
-    Set<T> retrieveAll(Class clazz);
+    Set<T> retrieveAll(Class klass);
 
 }
