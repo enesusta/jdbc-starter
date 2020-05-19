@@ -2,7 +2,7 @@ package com.github.enesusta.jdbc.test;
 
 import com.github.enesusta.jdbc.datasource.JdbcConfiguration;
 import com.github.enesusta.jdbc.datasource.JdbcDataSource;
-import com.github.enesusta.jdbc.datasource.PostgreJdbcDataSource;
+import com.github.enesusta.jdbc.datasource.HikariJdbcDataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +27,7 @@ public class TestOne {
                 .jdbcUrl("jdbc:postgresql://localhost:5432/docker?characterEncoding=utf8")
                 .build();
 
-        jdbcDataSource = new PostgreJdbcDataSource();
+        jdbcDataSource = new HikariJdbcDataSource();
         dataSource = jdbcDataSource.getDataSource(configuration);
 
     }

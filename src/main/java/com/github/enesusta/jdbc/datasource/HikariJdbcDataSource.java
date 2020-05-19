@@ -5,9 +5,10 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.DataSource;
 
-public class PostgreJdbcDataSource implements JdbcDataSource {
+public final class HikariJdbcDataSource implements JdbcDataSource {
 
-    public DataSource getDataSource(final JdbcConfiguration jdbcConfiguration) {
+    @Override
+    public final DataSource getDataSource(final JdbcConfiguration jdbcConfiguration) {
 
         final HikariConfig config = new HikariConfig();
         config.setJdbcUrl(jdbcConfiguration.getJdbcUrl());
@@ -26,6 +27,7 @@ public class PostgreJdbcDataSource implements JdbcDataSource {
         config.addDataSourceProperty("maintainTimeStats", "true");
 
         final HikariDataSource ds = new HikariDataSource(config);
+
         return ds;
 
     }
