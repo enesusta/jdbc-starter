@@ -19,6 +19,7 @@ public class JdbcConfiguration {
     private int port;
     private Set<String> options;
     private DatabaseType databaseType;
+    private String sqliteDatabaseLocation;
     private Map<DatabaseType, String> databaseTypeStringMap = new HashMap<>(5);
 
     public JdbcConfiguration(final JdbcConfigurationBuilder builder) {
@@ -31,12 +32,14 @@ public class JdbcConfiguration {
         this.selectedDatabase = builder.selectedDatabase;
         this.options = builder.options;
         this.driverClassName = builder.driverClassName != null ? builder.driverClassName : builder.databaseType.getDriverClassName();
+        this.sqliteDatabaseLocation = builder.sqliteDatabaseLocation;
         init();
     }
 
     private void init() {
         databaseTypeStringMap.put(DatabaseType.POSTGRE, "postgresql");
         databaseTypeStringMap.put(DatabaseType.MYSQL, "mysql");
+        databaseTypeStringMap.put(DatabaseType.SQLITE, "sqlite");
     }
 
     public String getJdbcUrl() {
@@ -44,8 +47,14 @@ public class JdbcConfiguration {
         port = port != 0 ? port : databaseType.getPort();
         final String optionsString = String.join("", options);
 
-        if (jdbcUrl == null)
-            jdbcUrl = String.format("jdbc:%s://%s:%d/%s?%s", databaseTypeStringMap.get(databaseType), host, port, selectedDatabase, optionsString);
+        if (jdbcUrl == null) {
+            jdbcUrl =
+                String.format("jdbc:%s://%s:%d/%s?%s",
+                    databaseTypeStringMap.get(databaseType), host, port, selectedDatabase, optionsString);
+        } else if (sqliteDatabaseLocation != null) {
+            jdbcUrl =
+                String.format("jdbc:%s:%s", databaseTypeStringMap.get(databaseType), sqliteDatabaseLocation);
+        }
 
         System.out.println("jdbcUrl = " + jdbcUrl);
 
@@ -89,6 +98,7 @@ public class JdbcConfiguration {
         private String host = "localhost";
         private String selectedDatabase;
         private int port;
+        private String sqliteDatabaseLocation;
         private Set<String> options = new HashSet<>(5);
         private DatabaseType databaseType;
 
@@ -112,7 +122,7 @@ public class JdbcConfiguration {
             return this;
         }
 
-        public JdbcConfigurationBuilder driverClassName(final DatabaseType databaseType) {
+        public JdbcConfigurationBuilder type(final DatabaseType databaseType) {
             this.databaseType = databaseType;
             return this;
         }
@@ -132,9 +142,14 @@ public class JdbcConfiguration {
             return this;
         }
 
+        public JdbcConfigurationBuilder sqliteDatabaseLocation(final String sqliteDatabaseLocation) {
+            this.sqliteDatabaseLocation = sqliteDatabaseLocation;
+            return this;
+        }
+
         public JdbcConfigurationBuilder options(final List<JdbcOption> list) {
             for (final JdbcOption option : list) {
-                final String temp = String.format("%s=%s&", option.getConnectionOptions(), option.getValueOfProp());
+                final String temp = String.format("%s=%s&", option.getConnectionOptions().getProp(), option.getValueOfProp());
                 options.add(temp);
             }
             return this;

@@ -6,12 +6,18 @@ import javax.sql.DataSource;
 
 public final class SQLiteJdbcDataSource implements JdbcDataSource {
 
+    private final JdbcConfiguration jdbcConfiguration;
+
+    public SQLiteJdbcDataSource(final JdbcConfiguration jdbcConfiguration) {
+        this.jdbcConfiguration = jdbcConfiguration;
+    }
+
     @Override
-    public final DataSource getDataSource(final JdbcConfiguration jdbcConfiguration) {
+    public final DataSource getDataSource() {
 
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setUrl(jdbcConfiguration.getJdbcUrl());
-        dataSource.setDriverClassName("org.sqlite.JDBC");
+        dataSource.setDriverClassName(jdbcConfiguration.getDriverClassName());
 
         return dataSource;
     }

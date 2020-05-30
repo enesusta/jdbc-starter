@@ -28,7 +28,7 @@ class DefaultJdbcConsumerTest {
         JdbcConfiguration configuration = new JdbcConfiguration.JdbcConfigurationBuilder()
             .username("docker")
             .password("mykenai1363")
-            .driverClassName(DatabaseType.POSTGRE)
+            .type(DatabaseType.POSTGRE)
             .host("localhost")
             .selectedDatabase("docker")
             .options(
@@ -37,8 +37,8 @@ class DefaultJdbcConsumerTest {
 //            .jdbcUrl("jdbc:postgresql://localhost:5432/docker?characterEncoding=utf8")
             .build();
 
-        jdbcDataSource = new HikariJdbcDataSource();
-        dataSource = jdbcDataSource.getDataSource(configuration);
+        jdbcDataSource = new HikariJdbcDataSource(configuration);
+        dataSource = jdbcDataSource.getDataSource();
 
     }
 

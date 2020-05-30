@@ -7,8 +7,14 @@ import javax.sql.DataSource;
 
 public final class HikariJdbcDataSource implements JdbcDataSource {
 
+    private final JdbcConfiguration jdbcConfiguration;
+
+    public HikariJdbcDataSource(JdbcConfiguration jdbcConfiguration) {
+        this.jdbcConfiguration = jdbcConfiguration;
+    }
+
     @Override
-    public final DataSource getDataSource(final JdbcConfiguration jdbcConfiguration) {
+    public final DataSource getDataSource() {
 
         final HikariConfig config = new HikariConfig();
         config.setJdbcUrl(jdbcConfiguration.getJdbcUrl());

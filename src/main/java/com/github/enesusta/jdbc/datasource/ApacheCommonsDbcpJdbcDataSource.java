@@ -6,8 +6,14 @@ import javax.sql.DataSource;
 
 public final class ApacheCommonsDbcpJdbcDataSource implements JdbcDataSource {
 
+    private final JdbcConfiguration jdbcConfiguration;
+
+    public ApacheCommonsDbcpJdbcDataSource(final JdbcConfiguration jdbcConfiguration) {
+        this.jdbcConfiguration = jdbcConfiguration;
+    }
+
     @Override
-    public final DataSource getDataSource(final JdbcConfiguration jdbcConfiguration) {
+    public final DataSource getDataSource() {
 
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setUrl(jdbcConfiguration.getJdbcUrl());
