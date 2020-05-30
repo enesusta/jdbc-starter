@@ -1,24 +1,54 @@
 package com.github.enesusta.jdbc.datasource;
 
+import com.github.enesusta.jdbc.datasource.enums.DatabaseType;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class JdbcConfiguration {
 
     private String jdbcUrl;
     private String username;
     private String password;
     private String driverClassName;
-
-    public JdbcConfiguration() {
-
-    }
+    private String host;
+    private String selectedDatabase;
+    private int port;
+    private Set<String> options;
+    private DatabaseType databaseType;
+    private Map<DatabaseType, String> databaseTypeStringMap = new HashMap<>(5);
 
     public JdbcConfiguration(final JdbcConfigurationBuilder builder) {
         this.jdbcUrl = builder.jdbcUrl;
         this.username = builder.username;
         this.password = builder.password;
-        this.driverClassName = builder.driverClassName;
+        this.host = builder.host;
+        this.databaseType = builder.databaseType;
+        this.port = builder.port;
+        this.selectedDatabase = builder.selectedDatabase;
+        this.options = builder.options;
+        this.driverClassName = builder.driverClassName != null ? builder.driverClassName : builder.databaseType.getDriverClassName();
+        init();
+    }
+
+    private void init() {
+        databaseTypeStringMap.put(DatabaseType.POSTGRE, "postgresql");
+        databaseTypeStringMap.put(DatabaseType.MYSQL, "mysql");
     }
 
     public String getJdbcUrl() {
+
+        port = port != 0 ? port : databaseType.getPort();
+        final String optionsString = String.join("", options);
+
+        if (jdbcUrl == null)
+            jdbcUrl = String.format("jdbc:%s://%s:%d/%s?%s", databaseTypeStringMap.get(databaseType), host, port, selectedDatabase, optionsString);
+
+        System.out.println("jdbcUrl = " + jdbcUrl);
+
         return jdbcUrl;
     }
 
@@ -56,6 +86,11 @@ public class JdbcConfiguration {
         private String username;
         private String password;
         private String driverClassName;
+        private String host = "localhost";
+        private String selectedDatabase;
+        private int port;
+        private Set<String> options = new HashSet<>(5);
+        private DatabaseType databaseType;
 
         public JdbcConfigurationBuilder jdbcUrl(final String jdbcUrl) {
             this.jdbcUrl = jdbcUrl;
@@ -74,6 +109,34 @@ public class JdbcConfiguration {
 
         public JdbcConfigurationBuilder driverClassName(final String driverClassName) {
             this.driverClassName = driverClassName;
+            return this;
+        }
+
+        public JdbcConfigurationBuilder driverClassName(final DatabaseType databaseType) {
+            this.databaseType = databaseType;
+            return this;
+        }
+
+        public JdbcConfigurationBuilder host(final String host) {
+            this.host = host;
+            return this;
+        }
+
+        public JdbcConfigurationBuilder selectedDatabase(final String selectedDatabase) {
+            this.selectedDatabase = selectedDatabase;
+            return this;
+        }
+
+        public JdbcConfigurationBuilder port(final int port) {
+            this.port = port;
+            return this;
+        }
+
+        public JdbcConfigurationBuilder options(final List<JdbcOption> list) {
+            for (final JdbcOption option : list) {
+                final String temp = String.format("%s=%s&", option.getConnectionOptions(), option.getValueOfProp());
+                options.add(temp);
+            }
             return this;
         }
 
