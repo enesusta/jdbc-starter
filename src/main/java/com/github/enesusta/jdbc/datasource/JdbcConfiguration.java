@@ -44,10 +44,9 @@ public class JdbcConfiguration {
 
     public String getJdbcUrl() {
 
-        port = port != 0 ? port : databaseType.getPort();
-        final String optionsString = String.join("", options);
-
         if (jdbcUrl == null) {
+            port = port != 0 ? port : databaseType.getPort();
+            final String optionsString = String.join("", options);
             jdbcUrl =
                 String.format("jdbc:%s://%s:%d/%s?%s",
                     databaseTypeStringMap.get(databaseType), host, port, selectedDatabase, optionsString);
@@ -55,8 +54,6 @@ public class JdbcConfiguration {
             jdbcUrl =
                 String.format("jdbc:%s:%s", databaseTypeStringMap.get(databaseType), sqliteDatabaseLocation);
         }
-
-        System.out.println("jdbcUrl = " + jdbcUrl);
 
         return jdbcUrl;
     }
