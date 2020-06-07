@@ -60,6 +60,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.github.enesusta</groupId>
+      <artifactId>jloader</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
       <version>${hikaricp.version}</version>

@@ -49,9 +49,9 @@ class DefaultJdbcConsumerTest {
         JdbcConsumer<Humans> humansJdbcConsumer = new DefaultJdbcConsumer<>(dataSource);
         Set<Humans> humansSet = humansJdbcConsumer.retrieveAll(Humans.class);
 
-        humansSet.forEach(e -> {
-            System.out.printf("ID is : %d, first_name is %s\n", e.getId(), e.getFirstName());
-        });
+       // humansSet.forEach(e -> {
+        //    System.out.printf("ID is : %d, first_name is %s\n", e.getId(), e.getFirstName());
+        //});
     }
 
 }
